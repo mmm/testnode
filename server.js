@@ -11,8 +11,10 @@ db.addListener("error", function(error) {
 });
 
 var server = http.createServer(function (request, response) {
+  var address = request.connection.remoteAddress;
+
   response.writeHead(200, {"Content-Type": "text/plain"});
-  response.end("Hello World\n");
+  response.end("Hello " + address + "\n");
 });
 server.listen(config.listen_port);
 
