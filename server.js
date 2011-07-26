@@ -14,7 +14,6 @@ var show_log = function(request, response){
       collection.find({}, {limit:10, sort:[['_id','desc']]}, function(err, cursor){
         cursor.toArray(function(err, items){
           response.writeHead(200, {'Content-Type': 'text/plain'});
-          response.write("Hit-Log:\n");
           for(i=0; i<items.length;i++){
             response.write(JSON.stringify(items[i]) + "\n");
           }
@@ -32,10 +31,7 @@ var track_hit = function(request, response){
     db.collection('addresses', function(err, collection){
       var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
-      hit_record = { 
-        'client_address': address
-        ,'ts': new Date() 
-      };
+      hit_record = { 'client': address,'ts': new Date() };
 
       collection.insert( hit_record, {safe:true}, function(err){
         if(err) { 
@@ -55,7 +51,7 @@ var server = http.createServer(function (request, response) {
 
   var url = require('url').parse(request.url);
 
-  if(url.pathname === '/list') {
+  if(url.pathname === '/hits') {
     show_log(request, response);
   } else {
     track_hit(request, response);
