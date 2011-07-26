@@ -8,44 +8,44 @@ var config = require('./config/config'),
 
 var show_log = function(request, response){
   var db = new mongo.Db('mynodeapp', new mongo.Server(config.mongo_host, config.mongo_port, {}), {});
-  db.addListener("error", function(error) {
-    console.log("Error connecting to mongo");
-  });
+  db.addListener("error", function(error) { console.log("Error connecting to mongo"); });
   db.open(function(err, db){
-	    db.collection('addresses', function(err, collection){
-	      collection.find({}, {limit:10, sort:[['_id','desc']]}, function(err, cursor){
-		cursor.toArray(function(err, items){
-		  response.writeHead(200, {'Content-Type': 'text/plain'});
-		  response.write("Hit-Log:\n");
-		  for(i=0; i<items.length;i++){
-		    response.write(JSON.stringify(items[i]) + "\n");
-		  }
-		  response.end();
-		});
-	      });
-	    });
+    db.collection('addresses', function(err, collection){
+      collection.find({}, {limit:10, sort:[['_id','desc']]}, function(err, cursor){
+        cursor.toArray(function(err, items){
+          response.writeHead(200, {'Content-Type': 'text/plain'});
+          response.write("Hit-Log:\n");
+          for(i=0; i<items.length;i++){
+            response.write(JSON.stringify(items[i]) + "\n");
+          }
+          response.end();
+        });
+      });
+    });
   });
 }
 
 var track_hit = function(request, response){
   var db = new mongo.Db('mynodeapp', new mongo.Server(config.mongo_host, config.mongo_port, {}), {});
-  db.addListener("error", function(error) {
-    console.log("Error connecting to mongo");
-  });
+  db.addListener("error", function(error) { console.log("Error connecting to mongo"); });
   db.open(function(err, db){
-	    db.collection('addresses', function(err, collection){
-	      var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
-	      hit_record = { 'ip': address, 'ts': new Date() };
+    db.collection('addresses', function(err, collection){
+      var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
-	      collection.insert( hit_record, {safe:true}, function(err){
-		if(err) { 
-		  console.log(err.stack);
-		}
-		response.writeHead(200, {'Content-Type': 'text/plain'});
-		response.write(JSON.stringify(hit_record));
-		response.end("Tracked hit from " + address + "\n");
-	      });
-	    });
+      hit_record = { 
+        'client_address': address
+        ,'ts': new Date() 
+      };
+
+      collection.insert( hit_record, {safe:true}, function(err){
+        if(err) { 
+          console.log(err.stack);
+        }
+        response.writeHead(200, {'Content-Type': 'text/plain'});
+        response.write(JSON.stringify(hit_record));
+        response.end("Tracked hit from " + address + "\n");
+      });
+    });
   });
 }
 
