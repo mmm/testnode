@@ -11,7 +11,7 @@ db.addListener("error", function(error) {
 });
 
 var server = http.createServer(function (request, response) {
-  var address = request.header('x-forwarded-for') || request.connection.remoteAddress;
+  var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
   response.writeHead(200, {"Content-Type": "text/plain"});
   response.write("Hello " + address + "\n");
