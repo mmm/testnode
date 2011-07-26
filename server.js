@@ -30,7 +30,8 @@ var show_log = function(request, response){
 var track_hit = function(request, response){
   db.open(function(err, connection){
     connection.collection('addresses', function(err, collection){
-      hit_record = { 'ip': request.connection.remoteAddress, 'ts': new Date() };
+      var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+      hit_record = { 'ip': address, 'ts': new Date() };
 
       collection.insert( hit_record, {safe:true}, function(err){
         if(err) { 
@@ -47,7 +48,6 @@ var track_hit = function(request, response){
 
 
 var server = http.createServer(function (request, response) {
-  var address = request.connection.remoteAddress;
 
   var url = require('url').parse(req.url);
 
