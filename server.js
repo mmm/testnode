@@ -1,10 +1,9 @@
 //require.paths.unshift(__dirname + '/lib');
 //require.paths.unshift(__dirname);
 
-var  config = require('./config/config');
-
-// Load the http module to create an http server.
-var http = require('http');
+var config = require('./config/config'),
+    mongo = require('mongodb'),
+    http = require('http');
 
 db = new mongo.Db('mynodeapp', new mongo.Server(config.mongo_host, config.mongo_port, {}), {});
 
