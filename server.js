@@ -15,7 +15,7 @@ var server = http.createServer(function (request, response) {
 
   response.writeHead(200, {"Content-Type": "text/plain"});
   response.write("Hello " + address + "\n");
-  response.end("request:" + JSON.stringify(request) + "\n");
+  response.end("request:" + JSON.stringify(request.headers) + "\n");
 });
 server.listen(config.listen_port);
 
