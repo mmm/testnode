@@ -37,8 +37,11 @@ var track_hit = function(request, response, db){
   });
 }
 
-var db = new mongo.Db('mynodeapp', new mongo.Server(config.mongo_host, config.mongo_port, {}), {});
-db.addListener("error", function(error) { console.log("Error connecting to mongo"); });
+var replSet = new mongo.ReplSetServers(
+  [ new mongo.Server(config.mongo_host, config.mongo_port, {}) ],
+  { rs_name:config.mongo_replset }
+);
+var db = new mongo.Db('mynodeapp', replSet);
 db.open(function(err, db){
   var server = http.createServer(function (request, response) {
 
