@@ -2,7 +2,7 @@
     , "description" :     "A node.js test app"
     , "version" :    "0.0.1"
     , "dependencies": {
-        "mongodb": ">= 0.9.6-7"
+        "mongodb": "= 0.9.6-7"
         ,"socket.io": ">= 0.6.16"
         ,"node-static": ">= 0.5.6"
     }
